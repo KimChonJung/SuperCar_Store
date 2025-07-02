@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Giỏ hàng</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: white;
+    }
+    .cart-item {
+      background-color: #1e1e2f;
+      border: 1px solid #00ffc3;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .cart-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+    }
+    .card-title, .card-text {
+      color: white;
+    }
+    .btn {
+      transition: all 0.3s ease;
+    }
+    .btn:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+    .modal-content {
+      border-radius: 15px;
+    }
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-5">
+    <div class="header-bar mb-4">
+      <a href="index.html" class="btn btn-outline-light">
+        ⬅ Quay về trang chủ
+      </a>
+      <h2 class="text-center flex-grow-1">🛒 <span style="color: aqua;">Giỏ hàng của bạn</span></h2>
+      <span id="userInfo" class="fw-bold text-end" style="min-width: 180px;"></span>
+    </div>
+
+    <div id="cartContainer" class="row g-4"></div>
+    <div id="historyContainer" class="mt-4"></div>
+
+    <h4 class="text-end mt-4">Tổng cộng: <span id="totalPrice">0 USD</span></h4>
+
+    <div class="text-end d-flex justify-content-end gap-2 mt-3">
+      <button class="btn btn-danger" onclick="clearCart()">🗑️ Xóa tất cả</button>
+      <button class="btn btn-primary" onclick="checkout()">💳 Thanh toán tất cả</button>
+    </div>
+  </div>
+
+  <!-- 🔔 Modal thông báo thanh toán -->
+  <div class="modal fade" id="paymentSuccessModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content text-dark">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title">✅ Thanh toán thành công</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body fw-semibold" id="paymentSuccessMessage">
+          <!-- Nội dung sẽ thay đổi bằng JS -->
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-success" data-bs-dismiss="modal">Đóng</button>
+        </div>
+      </div>
+    </div>
+  </div>
+    <!-- 🔔 Modal xác nhận xóa -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-dark">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">⚠️ Xác nhận xóa</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body fw-semibold" id="confirmDeleteMessage">
+        <!-- Nội dung sẽ thay đổi bằng JS -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        <button class="btn btn-danger" id="confirmDeleteBtn">Xác nhận xóa</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- 🔔 Modal xác nhận -->
+<div class="modal fade" id="confirmModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-dark">
+      <div class="modal-header bg-warning text-white">
+        <h5 class="modal-title">⚠ Xác nhận</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body fw-semibold" id="confirmMessage">Bạn có chắc chắn?</div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        <button class="btn btn-danger" id="confirmYesBtn">Xác nhận</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+  const currentUser = localStorage.getItem("currentUser");
+  document.getElementById("userInfo").innerText = currentUser ? `👤 Đăng nhập: ${currentUser}` : "";
+
+  function renderCart() {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const container = document.getElementById("cartContainer");
+    const totalElement = document.getElementById("totalPrice");
+    container.innerHTML = '';
+    let total = 0;
+
+    if (cart.length === 0) {
+      container.innerHTML = "<p class='text-center'>🛒 Giỏ hàng của bạn đang trống.</p>";
+      totalElement.innerText = "0 USD";
+    } else {
+      cart.forEach((car, index) => {
+        const quantity = car.quantity || 1;
+        const itemTotal = Number(car.price) * quantity;
+        total += itemTotal;
+
+        container.innerHTML += `
+          <div class="col-md-4">
+            <div class="card cart-item h-100">
+              <img src="${car.image}" class="card-img-top" style="height: 200px; object-fit: cover;">
+              <div class="card-body">
+                <h5 class="card-title">${car.name}</h5>
+                <p class="card-text">Giá: ${Number(car.price).toLocaleString()} USD</p>
+                <div class="d-flex align-items-center mb-2">
+                  <label class="me-2">Số lượng:</label>
+                  <input type="number" min="1" value="${quantity}" onchange="updateQuantity(${index}, this.value)" class="form-control form-control-sm w-25">
+                </div>
+                <p>Thành tiền: ${itemTotal.toLocaleString()} USD</p>
+                <button class="btn btn-sm btn-success me-2" onclick="payItem(${index})">Thanh toán</button>
+                <button class="btn btn-sm btn-danger" onclick="removeItem(${index})">Xoá</button>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      totalElement.innerText = total.toLocaleString() + " USD";
+    }
+
+    renderPurchaseHistory(); // Thêm dòng này để hiển thị lịch sử mua hàng
+  }
+
+  function updateQuantity(index, quantity) {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    cart[index].quantity = parseInt(quantity);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    renderCart();
+  }
+
+  function removeItem(index) {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    cart.splice(index, 1);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    renderCart();
+  }
+
+function checkout() {
+  if (!currentUser) return alert("Vui lòng đăng nhập để thanh toán.");
+  
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  if (cart.length === 0) {
+    alert("🛒 Giỏ hàng đang trống.");
+    return;
+  }
+
+  const history = JSON.parse(localStorage.getItem('purchaseHistory') || '{}');
+  history[currentUser] = (history[currentUser] || []).concat(
+    cart.map(car => {
+      const quantity = car.quantity || 1;
+      const total = Number(car.price) * quantity;
+      return {
+        ...car,
+        quantity,
+        total,
+        time: new Date().toLocaleString()
+      };
+    })
+  );
+  localStorage.setItem('purchaseHistory', JSON.stringify(history));
+
+  // Tính tổng tiền
+  const totalPrice = cart.reduce((sum, car) => sum + Number(car.price) * (car.quantity || 1), 0);
+
+  // Tạo nội dung modal
+  const msg = document.getElementById("paymentSuccessMessage");
+  msg.innerHTML = `
+    🚀 <strong>Đơn hàng của bạn đang được xử lý.</strong><br>
+    💳 Số lượng sản phẩm: ${cart.length}<br>
+    💵 Tổng tiền: ${totalPrice.toLocaleString()} USD<br>
+    ❤️ Cảm ơn bạn đã mua sắm!
+  `;
+
+  // Hiện modal
+  new bootstrap.Modal(document.getElementById("paymentSuccessModal")).show();
+
+  // Xóa giỏ hàng và cập nhật lại giao diện
+  localStorage.removeItem('cart');
+  renderCart();
+}
+
+
+  function payItem(index) {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const car = cart[index];
+    const user = localStorage.getItem("currentUser");
+    if (!user) return alert("Vui lòng đăng nhập để thanh toán");
+
+    const quantity = car.quantity || 1;
+    const total = Number(car.price) * quantity;
+
+    const history = JSON.parse(localStorage.getItem("purchaseHistory") || "{}");
+    if (!history[user]) history[user] = [];
+    history[user].push({
+      ...car,
+      quantity,
+      total,
+      time: new Date().toLocaleString()
+    });
+    localStorage.setItem("purchaseHistory", JSON.stringify(history));
+
+    cart.splice(index, 1);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    renderCart();
+
+    const msg = document.getElementById("paymentSuccessMessage");
+    msg.innerHTML = `🚗 Bạn đã thanh toán thành công xe: <strong>${car.name}</strong><br>
+                     🔢 Số lượng: ${quantity}<br>
+                     💵 Tổng tiền: ${total.toLocaleString()} USD`;
+    new bootstrap.Modal(document.getElementById("paymentSuccessModal")).show();
+  }
+
+ function clearCart() {
+  document.getElementById("confirmDeleteMessage").innerHTML = "Bạn có chắc chắn muốn <strong>xóa toàn bộ giỏ hàng</strong> không?";
+  document.getElementById("confirmDeleteBtn").onclick = () => {
+    localStorage.removeItem('cart');
+    bootstrap.Modal.getInstance(document.getElementById("confirmDeleteModal")).hide();
+    renderCart();
+  };
+  new bootstrap.Modal(document.getElementById("confirmDeleteModal")).show();
+}
+
+ function renderPurchaseHistory() {
+  if (!currentUser) return;
+
+  const historyData = JSON.parse(localStorage.getItem("purchaseHistory") || "{}")[currentUser] || [];
+  const historyContainer = document.getElementById("historyContainer");
+  historyContainer.innerHTML = ""; // ✅ Dọn sạch trước
+
+  if (historyData.length === 0) return;
+
+  let html = `
+    <div>
+      <div class="d-flex justify-content-between align-items-center">
+        <h4>📜 Lịch sử mua hàng</h4>
+        <button class="btn btn-sm btn-outline-danger" onclick="clearPurchaseHistory()">Xóa lịch sử</button>
+      </div>
+      <table class="table table-dark table-bordered mt-2">
+        <thead>
+          <tr>
+            <th>Xe</th>
+            <th>Số lượng</th>
+            <th>Giá</th>
+            <th>Tổng</th>
+            <th>Thời gian</th>
+          </tr>
+        </thead>
+        <tbody>
+  `;
+
+  historyData.slice(-5).reverse().forEach(item => {
+    html += `
+      <tr>
+        <td>${item.name}</td>
+        <td>${item.quantity || 1}</td>
+        <td>${Number(item.price).toLocaleString()} USD</td>
+        <td>${Number(item.total).toLocaleString()} USD</td>
+        <td>${item.time}</td>
+      </tr>
+    `;
+  });
+
+  html += "</tbody></table></div>";
+  historyContainer.innerHTML = html;
+}
+
+
+   function clearPurchaseHistory() {
+  if (!currentUser) return;
+  showConfirmModal("Bạn có chắc chắn muốn <strong>xóa toàn bộ lịch sử mua hàng</strong> không?", () => {
+    const history = JSON.parse(localStorage.getItem("purchaseHistory") || "{}");
+    delete history[currentUser];
+    localStorage.setItem("purchaseHistory", JSON.stringify(history));
+    renderCart();
+  });
+}
+
+    function showConfirmModal(message, onConfirm) {
+  document.getElementById("confirmMessage").innerText = message;
+  const yesBtn = document.getElementById("confirmYesBtn");
+
+  // Gỡ sự kiện cũ nếu có
+  const newYesBtn = yesBtn.cloneNode(true);
+  yesBtn.parentNode.replaceChild(newYesBtn, yesBtn);
+
+  newYesBtn.addEventListener("click", () => {
+    onConfirm();
+    bootstrap.Modal.getInstance(document.getElementById("confirmModal")).hide();
+  });
+
+  new bootstrap.Modal(document.getElementById("confirmModal")).show();
+}
+
+  renderCart();
+</script>
+
+</body>
+</html>

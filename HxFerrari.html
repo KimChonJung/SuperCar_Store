@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hãng xe Ferrari</title>
+
+  <!-- Bootstrap CSS & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  
+  <style>
+    body {
+    background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+    color: #fff;
+    }
+    .card img {
+    height: 200px;
+    object-fit: cover;
+    background-color: #2c2c2c;
+    }
+    .navbar-nav .nav-link.active {
+    color: black !important;
+    }
+    .navbar-nav .nav-link {
+    color: black !important;
+    transition: color 0.2s ease;
+    }
+    .navbar-nav .nav-link:hover {
+      color: white !important;
+    }
+    .card {
+    border-radius: 12px;
+    box-shadow: 0 2px 8px aqua;
+    transition: transform 0.2s ease;
+    }
+    .card:hover {
+    transform: translateY(-4px);
+    }
+    .card-img-top {
+    transition: transform 0.4s ease;
+    cursor: zoom-in;
+    }
+
+    .card-img-top:hover {
+    transform: scale(1.1);
+    }
+    .navbar.sticky-top {
+    box-shadow: 0 2px 10px rgba(0, 255, 255, 0.3);
+    }
+    .btn-success:hover {
+    background-color: #00ffcc;
+    color: black;
+    }
+    .bg-custom {
+    background: linear-gradient(to right, aqua, rgb(47, 163, 163), rgb(68, 100, 100)); /* Đổi theo ý bạn */
+    }
+    .navbar-brand {
+    color: black!important;  /* Màu cam sáng – bạn có thể đổi mã màu */
+    font-weight: bold;
+    } 
+
+    /* Chỉ áp dụng cho modal liên hệ */
+    #contactModal .modal-content {
+    background-color: #fff;
+    color: #000;
+    }
+    #contactModal a {
+    color: #007bff;
+    }
+    #contactModal strong {
+    color: #000;
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- 🔷 Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-custom sticky-top shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold text-uppercase" href="#">
+      <i class="bi bi-car-front-fill me-2"></i>Super Car Store
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="mainNavbar">
+      <!-- Menu bên trái -->
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link active fw-semibold" href="index.html">Trang chủ</a></li>
+       <li class="nav-item dropdown">
+    <a class="nav-link fw-semibold dropdown-toggle" href="#" id="moreMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Xem thêm
+    </a>
+    <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="HxLamborghini.html" target="_blank">Hãng xe Lamborghini</a></li>
+        <li><a class="dropdown-item" href="HxBugatti.html" target="_blank">Hãng xe Bugatti</a></li>
+        <li><a class="dropdown-item" href="HxFerrari.html" >Hãng xe Ferrari</a></li>
+    </ul>
+    </li>
+
+        <li class="nav-item"><a class="nav-link fw-semibold" href="GioHang.html" >Giỏ hàng</a></li>
+        <li class="nav-item">
+        <a class="nav-link fw-semibold" href="#" onclick="showContact()">Liên hệ</a>
+        </li>
+      </ul>
+      <!-- User area -->
+      <ul class="navbar-nav d-flex align-items-center" id="userArea"></ul>
+    </div>
+  </div>
+</nav>
+
+<!-- 🚗 Danh sách xe -->
+<div class="container py-5">
+  <h2 class="text-center mb-4">Mẫu xe Ferrari</h2>
+  <div class="row g-4" id="carList">
+    <!-- Mỗi xe là một card -->
+
+    <div class="col-md-4">
+      <div class="card h-100">
+        <img src="ImageAsm/LaFerrari.jpg" class="card-img-top" alt="Ferrari LaFerrari" onclick="showImageModal(this)">
+        <div class="card-body">
+          <h5 class="card-title">Ferrari LaFerrari</h5>
+          <p class="card-text">Giá: 3.600.000 USD</p>
+          <div class="d-flex justify-content-between">
+            <a href="https://en.wikipedia.org/wiki/LaFerrari" target="_blank" class="btn btn-outline-primary btn-sm">Chi tiết</a>
+             <button class="btn btn-success btn-sm" onclick="addToCart('Ferrari LaFerrari',3600000,'ImageAsm/LaFerrari.jpg')">Mua ngay</button>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card h-100">
+        <img src="ImageAsm/Superfast.jpg" class="card-img-top" alt="Ferrari 812 Superfast" onclick="showImageModal(this)">
+        <div class="card-body">
+          <h5 class="card-title">Ferrari 812 Superfast</h5>
+          <p class="card-text">Giá: 315.000 USD</p>
+          <div class="d-flex justify-content-between">
+            <a href="https://en.wikipedia.org/wiki/Ferrari_812_Superfast" target="_blank" class="btn btn-outline-primary btn-sm">Chi tiết</a>
+            <button class="btn btn-success btn-sm" onclick="addToCart('Ferrari 812 Superfast',315000,'ImageAsm/Superfast.jpg')">Mua ngay</button>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card h-100">
+        <img src="ImageAsm/Roma.jpg" class="card-img-top" alt="Ferrari Roma" onclick="showImageModal(this)">
+        <div class="card-body">
+          <h5 class="card-title">Ferrari Roma</h5>
+          <p class="card-text">Giá: 764.496 USD</p>
+          <div class="d-flex justify-content-between">
+            <a href="https://en.wikipedia.org/wiki/Ferrari_Roma" target="_blank" class="btn btn-outline-primary btn-sm">Chi tiết</a>
+            <button class="btn btn-success btn-sm" onclick="addToCart('Ferrari Roma',764496,'ImageAsm/Roma.jpg')">Mua ngay</button>
+            </div>
+        </div>
+      </div>
+    </div>
+         
+         <div class="col-md-4">
+      <div class="card h-100">
+        <img src="ImageAsm/Tributo.jpg" class="card-img-top" alt="Ferrari F8 Tributo" onclick="showImageModal(this)">
+        <div class="card-body">
+          <h5 class="card-title">Ferrari F8 Tributo </h5>
+          <p class="card-text">Giá: 938.953 USD</p>
+          <div class="d-flex justify-content-between">
+             <a href="https://it.wikipedia.org/wiki/Ferrari_F8_Tributo" target="_blank" class="btn btn-outline-primary btn-sm">Chi tiết</a>
+                <button class="btn btn-success btn-sm" onclick="addToCart('Ferrari F8 Tributo',938953,'ImageAsm/Tributo.jpg')">Mua ngay</button>
+            </div>
+        </div>
+      </div>
+    </div>
+
+         <div class="col-md-4">
+      <div class="card h-100">
+        <img src="ImageAsm/Purosangue.jpg" class="card-img-top" alt="Ferrari Purosangue" onclick="showImageModal(this)">
+        <div class="card-body">
+          <h5 class="card-title">Ferrari Purosangue</h5>
+          <p class="card-text">Giá: 1.490.767 USD</p>
+          <div class="d-flex justify-content-between">
+            <a href="https://en.wikipedia.org/wiki/Ferrari_Purosangue" target="_blank" class="btn btn-outline-primary btn-sm">Chi tiết</a>
+            <button class="btn btn-success btn-sm" onclick="addToCart('Ferrari Purosangue',1490767,'ImageAsm/Purosangue.jpg')">Mua ngay</button>
+            </div>
+        </div>
+      </div>
+    </div>
+
+         <div class="col-md-4">
+      <div class="card h-100">
+        <img src="ImageAsm/DaytonaSP3.jpg" class="card-img-top" alt="Ferrari Daytona SP3" onclick="showImageModal(this)">
+        <div class="card-body">
+          <h5 class="card-title">Ferrari Daytona SP3</h5>
+          <p class="card-text">Giá: 2.000.000 USD</p>
+          <div class="d-flex justify-content-between">
+            <a href="https://en.wikipedia.org/wiki/Ferrari_Daytona_SP3" target="_blank" class="btn btn-outline-primary btn-sm">Chi tiết</a>
+            <button class="btn btn-success btn-sm" onclick="addToCart('Ferrari Daytona SP3',2000000,'ImageAsm/DaytonaSP3.jpg')">Mua ngay</button>
+            </div>
+        </div>
+      </div>
+    </div>
+
+            <!-- 🛒 Modal Thông báo mua hàng -->
+<div class="modal fade" id="purchaseModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title">Thông báo</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-dark" id="purchaseMessage">
+        <!-- Nội dung sẽ thay đổi -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" data-bs-dismiss="modal">Đóng</button>
+      </div>
+    </div>
+  </div>
+</div>
+  </div>
+</div>
+
+<!-- 🔐 Modal Đăng ký (Giao diện nâng cấp) -->
+<div class="modal fade" id="registerModal" tabindex="-1">
+  <div class="modal-dialog">
+    <form class="modal-content p-4 rounded-4 shadow-lg" 
+          style="background: linear-gradient(to right, #1f4037, #99f2c8); color: #000;" 
+          onsubmit="registerUser(event)">
+          
+      <div class="modal-header border-0">
+        <h5 class="modal-title"><i class="bi bi-person-plus-fill me-2"></i>Đăng ký tài khoản</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-floating mb-3">
+          <input type="email" class="form-control" id="registerEmail" placeholder="Email" required>
+          <label for="registerEmail"><i class="bi bi-envelope-at-fill me-2"></i>Email</label>
+        </div>
+
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" id="registerUsername" placeholder="Tên người dùng" required>
+          <label for="registerUsername"><i class="bi bi-person-circle me-2"></i>Tên người dùng</label>
+        </div>
+
+        <div class="form-floating mb-3">
+          <input type="password" class="form-control" id="registerPassword" placeholder="Mật khẩu" required>
+          <label for="registerPassword"><i class="bi bi-lock-fill me-2"></i>Mật khẩu</label>
+        </div>
+      </div>
+
+      <div class="modal-footer border-0">
+        <button type="submit" class="btn btn-dark w-100">🚀 Đăng ký ngay</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+
+<!-- 🔐 Modal Đăng nhập (Giao diện nâng cấp) -->
+<div class="modal fade" id="loginModal" tabindex="-1">
+  <div class="modal-dialog">
+    <form class="modal-content p-4 rounded-4 shadow-lg"
+          style="background: linear-gradient(to right, #141e30, #243b55); color: #fff;"
+          onsubmit="loginUser(event)">
+          
+      <div class="modal-header border-0">
+        <h5 class="modal-title"><i class="bi bi-box-arrow-in-right me-2"></i>Đăng nhập</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" id="loginUsername" placeholder="Tên người dùng" required>
+          <label for="loginUsername"><i class="bi bi-person-circle me-2"></i>Tên người dùng</label>
+        </div>
+
+        <div class="form-floating mb-3">
+          <input type="password" class="form-control" id="loginPassword" placeholder="Mật khẩu" required>
+          <label for="loginPassword"><i class="bi bi-lock-fill me-2"></i>Mật khẩu</label>
+        </div>
+      </div>
+
+      <div class="modal-footer border-0">
+        <button type="submit" class="btn btn-info w-100 text-white fw-semibold">🔐 Đăng nhập</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal xem ảnh lớn -->
+<div class="modal fade" id="imageModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content bg-transparent border-0">
+      <div class="modal-body text-center p-0">
+        <img id="modalImage" src="" class="img-fluid rounded" style="max-height: 80vh;" />
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- 📩 Modal Liên hệ -->
+<div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="contactModalLabel">Liên hệ với chúng tôi</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+      </div>
+      <div class="modal-body">
+        <p>📧 Email: <a href="mailto:support@supercarstore.com">Support@supercarstore.com</a></p>
+        <p>📞 Hotline: <strong>0900 900 909</strong></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- 📞 Footer -->
+<footer class="bg-dark text-white text-center py-3">
+  © 2025 SuperCarStore. Hotline: 0900 900 909
+</footer>
+
+<!-- 🔧 JavaScript quản lý người dùng -->
+<script>
+  let currentUser = localStorage.getItem("currentUser");
+  let users = JSON.parse(localStorage.getItem("users") || "[]");
+
+  function updateNavbar() {
+    const area = document.getElementById("userArea");
+    if (currentUser) {
+      area.innerHTML = `
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Xin chào, ${currentUser}</a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="#">Tài khoản</a></li>
+            <li><a class="dropdown-item" href="#" onclick="logout()">Đăng xuất</a></li>
+          </ul>
+        </li>
+      `;
+    } else {
+      area.innerHTML = `
+        <li class="nav-item"><a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Đăng ký</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng nhập</a></li>
+      `;
+    }
+  }
+
+  function registerUser(event) {
+    event.preventDefault();
+    const username = document.getElementById("registerUsername").value.trim();
+    const password = document.getElementById("registerPassword").value.trim();
+
+    if (users.find(u => u.username === username)) {
+      alert("Tên người dùng đã tồn tại!");
+      return;
+    }
+
+    users.push({ username, password });
+    localStorage.setItem("users", JSON.stringify(users));
+    alert("Đăng ký thành công!");
+    bootstrap.Modal.getInstance(document.getElementById("registerModal")).hide();
+  }
+
+  function registerUser(event) {
+  event.preventDefault();
+  const email = document.getElementById("registerEmail").value.trim();
+  const username = document.getElementById("registerUsername").value.trim();
+  const password = document.getElementById("registerPassword").value.trim();
+
+  if (users.find(u => u.username === username)) {
+    alert("Tên người dùng đã tồn tại!");
+    return;
+  }
+
+  users.push({ email, username, password });
+  localStorage.setItem("users", JSON.stringify(users));
+
+  alert("Đăng ký thành công!");
+  bootstrap.Modal.getInstance(document.getElementById("registerModal")).hide();
+}
+
+
+function addToCart(carName, carPrice, carImage) {
+  const currentUser = localStorage.getItem("currentUser");
+
+  if (!currentUser) {
+    alert("❗Vui lòng đăng nhập để mua hàng.");
+    const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
+    loginModal.show();
+    return;
+  }
+
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  cart.push({
+    name: carName,
+    price: carPrice,
+    image: carImage
+  });
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+
+  document.getElementById("purchaseMessage").innerHTML = `
+    <strong>Đã thêm vào giỏ:</strong> ${carName} <br>
+    <strong>Giá:</strong> ${carPrice.toLocaleString()} USD
+  `;
+
+  const purchaseModal = new bootstrap.Modal(document.getElementById("purchaseModal"));
+  purchaseModal.show();
+}
+
+function loginUser(event) {
+  event.preventDefault();
+  const username = document.getElementById("loginUsername").value.trim();
+  const password = document.getElementById("loginPassword").value.trim();
+
+  const user = users.find(u => u.username === username);
+
+  if (!user) {
+    alert("❌ Tài khoản chưa đăng ký. Vui lòng đăng ký trước!");
+    bootstrap.Modal.getInstance(document.getElementById("loginModal")).hide();
+    const registerModal = new bootstrap.Modal(document.getElementById("registerModal"));
+    registerModal.show();
+    return;
+  }
+
+  if (user.password !== password) {
+    alert("⚠ Sai mật khẩu. Vui lòng thử lại!");
+    return;
+  }
+
+  currentUser = username;
+  localStorage.setItem("currentUser", username);
+  updateNavbar();
+  bootstrap.Modal.getInstance(document.getElementById("loginModal")).hide();
+}
+
+
+    function showImageModal(imgElement) {
+    const modalImage = document.getElementById("modalImage");
+    modalImage.src = imgElement.src;
+    new bootstrap.Modal(document.getElementById("imageModal")).show();
+}
+
+    function showContact() {
+  const contactModal = new bootstrap.Modal(document.getElementById('contactModal'));
+  contactModal.show();
+}
+
+function logout() {
+  currentUser = null;
+  localStorage.removeItem("currentUser");
+  updateNavbar(); // ⚠️ Cần có dòng này để cập nhật lại giao diện
+}
+
+  updateNavbar();
+</script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
